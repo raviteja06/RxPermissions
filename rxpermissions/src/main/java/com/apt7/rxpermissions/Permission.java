@@ -1,7 +1,7 @@
 package com.apt7.rxpermissions;
 
 /**
- * Created by Raviteja on 04-10-2016 for RxPermissionExample.
+ * Created by Raviteja on 04-10-2016 for RxPermission.
  * Copyright (c) 2016 Hug Innovations. All rights reserved.
  */
 

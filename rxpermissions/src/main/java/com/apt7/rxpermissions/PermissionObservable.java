@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
 
 /**
- * Created by Raviteja on 04-10-2016 for RxPermissionExample.
+ * Created by Raviteja on 04-10-2016 for RxPermission.
  * Copyright (c) 2016 Hug Innovations. All rights reserved.
  */
 
@@ -35,6 +36,7 @@ import io.reactivex.subjects.PublishSubject;
  */
 public class PermissionObservable {
 
+    private static PermissionsIgnoreList permissionsIgnoreList;
     private static PermissionObservable permissionObservable;
     private Map<String, PublishSubject<Permission>> publishSubjectHashMap = new HashMap<>();
 
@@ -47,6 +49,7 @@ public class PermissionObservable {
     public static PermissionObservable getInstance() {
         if (permissionObservable == null) {
             permissionObservable = new PermissionObservable();
+            permissionsIgnoreList = PermissionsIgnoreList.getInstance();
         }
         return permissionObservable;
     }
@@ -70,7 +73,8 @@ public class PermissionObservable {
                         return Observable.create(new ObservableOnSubscribe<Permission>() {
                             @Override
                             public void subscribe(ObservableEmitter<Permission> e) throws Exception {
-                                e.onNext(new Permission(permission, checkPermission(context, permission)));
+                                e.onNext(new Permission(permission, permissionsIgnoreList.validate(permission) ? checkPermission(context, permission) : Permission.PERMISSION_GRANTED));
+                                e.onComplete();
                             }
                         });
                     }
@@ -89,7 +93,7 @@ public class PermissionObservable {
             return Observable.error(new NullPointerException("Context cant be null"));
         }
         // validates and send the list to flat map, so it can divide as multiple observable calls
-        return Observable.just(validate(context, permissions))
+        return Observable.just(permissionsIgnoreList.validate(validate(context, permissions)))
                 // for each permission, pass to flap map to have specific observable to return response for permission request.
                 .flatMap(new Function<List<String>, Observable<Permission>>() {
                     @Override

@@ -6,6 +6,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+/**
+ * Created by Raviteja on 04-10-2016 for RxPermission.
+ * Copyright (c) 2016 Hug Innovations. All rights reserved.
+ */
+
 public class ShadowActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
