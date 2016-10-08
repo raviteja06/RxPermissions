@@ -1,6 +1,20 @@
 # RxPermissions
 
 ReactiveX/RxAndroid way to request permissions on android os above marshmallow and above.
+This library allows the usage of RxJava 2.0.
+To use this library your minSdkVersion must be >= 15.
+
+Add this to build.gradle
+
+	repositories {
+          jcenter() // If not already there
+    }
+
+    dependencies {
+	      compile 'com.github.raviteja06:RxPermissions:1.0.0'
+	}
+
+Usage
 
     // Check the permissions are given or not using below code.
     // returns 1,0,-1 as Granted, Not Granted, Revoked
@@ -50,3 +64,5 @@ ReactiveX/RxAndroid way to request permissions on android os above marshmallow a
                      dispose();
                  }
              });
+
+Note: You can use JakeWharton/RxBinding to turn your view to an observable (use requestAsTransformer method in compose method).
