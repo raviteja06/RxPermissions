@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/RxPermissionExample.iml" filepath="$PROJECT_DIR$/RxPermissionExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RxPermissions.iml" filepath="$PROJECT_DIR$/RxPermissions.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/rxpermissions/rxpermissions.iml" filepath="$PROJECT_DIR$/rxpermissions/rxpermissions.iml" />
     </modules>
