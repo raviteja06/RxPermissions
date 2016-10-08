@@ -1,6 +1,6 @@
 # RxPermissions
 
-ReactiveX/RxAndroid way to request permissions on android os above marshmallow and above.
+ReactiveX/RxAndroid way to request permissions on android os marshmallow and above.
 This library allows the usage of RxJava 2.0.
 To use this library your minSdkVersion must be >= 15.
 
