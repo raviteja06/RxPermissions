@@ -6,13 +6,13 @@ To use this library your minSdkVersion must be >= 15.
 
 Add this to build.gradle
 
-	repositories {
-          jcenter() // If not already there
+    repositories {
+         maven { url "https://jitpack.io" }
     }
 
     dependencies {
-	      compile 'com.github.raviteja06:RxPermissions:1.0.0'
-	}
+	 compile 'com.github.raviteja06:RxPermissions:1.0.0'
+    }
 
 Usage
 
