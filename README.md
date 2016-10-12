@@ -11,7 +11,7 @@ Add this to build.gradle
     }
 
     dependencies {
-	 compile 'com.github.raviteja06:RxPermissions:1.0.0'
+	compile 'com.github.raviteja06:RxPermissions:1.1.0'
     }
 
 Usage
