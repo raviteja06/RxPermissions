@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -178,7 +177,7 @@ public class PermissionObservable {
     /*
      * Start shadow activity. pass permissions in intent.
      */
-    private void startShadowActivity(@NonNull Context context, @NonNull String[] permissions) {
+    private void startShadowActivity(Context context, String[] permissions) {
         Intent intent = new Intent(context, ShadowActivity.class);
         intent.putExtra("permissions", permissions);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -189,7 +188,7 @@ public class PermissionObservable {
      * if OS os marshmallow, return if the permission is granted or not.
      */
     @TargetApi(Build.VERSION_CODES.M)
-    private boolean isGranted(@NonNull Context context, @NonNull String permission) {
+    private boolean isGranted(Context context, String permission) {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -197,14 +196,14 @@ public class PermissionObservable {
      * if OS os marshmallow, return if the permission is revoked or not.
      */
     @TargetApi(Build.VERSION_CODES.M)
-    private boolean isRevoked(@NonNull Context context, @NonNull String permission) {
+    private boolean isRevoked(Context context, String permission) {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || context.getPackageManager().isPermissionRevokedByPolicy(permission, context.getPackageName());
     }
 
     /*
      * converts string of permissions to map with status of the specific permission.
      */
-    private Map<String, Integer> getPermissionStatus(@NonNull Context context, @NonNull String... permissions) {
+    private Map<String, Integer> getPermissionStatus(Context context, String... permissions) {
         Map<String, Integer> permissionMap = new HashMap<>();
         for (String permission : permissions) {
             permissionMap.put(permission, checkPermission(context, permission));
@@ -226,7 +225,7 @@ public class PermissionObservable {
     /*
      * check whether permission is granted or not.
      */
-    private int checkPermission(@NonNull Context context, @NonNull String permission) {
+    private int checkPermission(Context context, String permission) {
         if (isGranted(context, permission)) {
             return Permission.PERMISSION_GRANTED;
         } else if (isRevoked(context, permission)) {

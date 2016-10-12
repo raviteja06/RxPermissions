@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 /**
  * Created by Raviteja on 04-10-2016 for RxPermission.
@@ -34,7 +33,7 @@ public class ShadowActivity extends Activity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         // pass the values to permission observable
         PermissionObservable.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
         // finish activity
