@@ -27,15 +27,19 @@ public class ShadowActivity extends Activity {
     // Read new intent when received.
     private void handleIntent(Intent intent) {
         String[] permissions = intent.getStringArrayExtra("permissions");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(permissions, Permission.REQUEST_VALUE);
+        if (permissions != null && permissions.length > 0) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(permissions, Permission.REQUEST_VALUE);
+            }
+        } else {
+            finish();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         // pass the values to permission observable
-        PermissionObservable.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionObservable.getInstance().onRequestPermissionsResult(this, requestCode, permissions, grantResults);
         // finish activity
         finish();
     }
