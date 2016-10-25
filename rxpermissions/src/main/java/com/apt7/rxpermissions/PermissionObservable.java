@@ -1,8 +1,10 @@
 package com.apt7.rxpermissions;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
@@ -38,6 +40,7 @@ public class PermissionObservable {
     private static PermissionsIgnoreList permissionsIgnoreList;
     private static PermissionObservable permissionObservable;
     private Map<String, PublishSubject<Permission>> publishSubjectHashMap = new HashMap<>();
+    private static SharedPrefHandler sharedPrefHandler;
 
     private PermissionObservable() {
     }
@@ -49,6 +52,7 @@ public class PermissionObservable {
         if (permissionObservable == null) {
             permissionObservable = new PermissionObservable();
             permissionsIgnoreList = PermissionsIgnoreList.getInstance();
+            sharedPrefHandler = SharedPrefHandler.getInstance();
         }
         return permissionObservable;
     }
@@ -178,10 +182,12 @@ public class PermissionObservable {
      * Start shadow activity. pass permissions in intent.
      */
     private void startShadowActivity(Context context, String[] permissions) {
-        Intent intent = new Intent(context, ShadowActivity.class);
-        intent.putExtra("permissions", permissions);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        if (permissions != null && permissions.length > 0) {
+            Intent intent = new Intent(context, ShadowActivity.class);
+            intent.putExtra("permissions", permissions);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
     }
 
     /*
@@ -197,7 +203,7 @@ public class PermissionObservable {
      */
     @TargetApi(Build.VERSION_CODES.M)
     private boolean isRevoked(Context context, String permission) {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || context.getPackageManager().isPermissionRevokedByPolicy(permission, context.getPackageName());
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || sharedPrefHandler.getPref(context, permission);
     }
 
     /*
@@ -227,6 +233,7 @@ public class PermissionObservable {
      */
     private int checkPermission(Context context, String permission) {
         if (isGranted(context, permission)) {
+            sharedPrefHandler.resetPref(context, permission);
             return Permission.PERMISSION_GRANTED;
         } else if (isRevoked(context, permission)) {
             return Permission.PERMISSION_REVOKED;
@@ -238,7 +245,7 @@ public class PermissionObservable {
     /*
      * Hook for shadow activity for returning requested data to permission observable
      */
-    void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    void onRequestPermissionsResult(Activity activity, int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == Permission.REQUEST_VALUE) {
             for (int i = 0, size = permissions.length; i < size; i++) {
                 PublishSubject<Permission> subject = publishSubjectHashMap.get(permissions[i]);
@@ -247,6 +254,13 @@ public class PermissionObservable {
                 }
                 publishSubjectHashMap.remove(permissions[i]);
                 boolean granted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
+                if (!granted) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (!activity.shouldShowRequestPermissionRationale(permissions[i])) {
+                            sharedPrefHandler.setPref(activity, permissions[i], true);
+                        }
+                    }
+                }
                 subject.onNext(new Permission(permissions[i], granted ? Permission.PERMISSION_GRANTED : Permission.PERMISSION_NOT_GRANTED));
                 subject.onComplete();
             }
